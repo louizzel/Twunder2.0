@@ -163,6 +163,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\Api\GetTweetsNoDBController.cs" />
     <Compile Include="Controllers\Api\GetOldTweetsController.cs" />
     <Compile Include="Controllers\Api\GetTweets2Controller.cs" />
     <Compile Include="Controllers\Api\GetTweetsController.cs" />
