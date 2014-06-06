@@ -41,3 +41,20 @@ code {
 .hide{
   display: none;
 }
+
+.tweet-photo {
+    width: 70px;
+    height: 70px;
+    float: left;
+    margin-right: 10px;
+}
+
+.tweet-date {
+    color: #737373;
+    font-size: 0.8em;
+}
+
+.tweet-username {
+    margin: 0 5px 0; 
+    color: #737373;
+}

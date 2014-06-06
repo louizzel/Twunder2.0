@@ -4,9 +4,11 @@
     var status = true;
     var tweetCount = 0;
     var time = new Date();
+    var allResults = 'Date,Twitter ID,Tweet';
     $('button').children('.loader').toggle();
     $('#tblResult').toggle();
-    $('#timeSpent').toggle();
+    //$('#timeSpent').toggle();
+    $('#btnExport').toggle();
 
     $('button').click(function () {
         sinceID = 0;
@@ -18,7 +20,8 @@
         $('button').children('.glyphicon').toggle();
         $('button').children('.loader').toggle();
         $('button').addClass('disabled');
-        $('#timeSpent').toggle().html('Time Start = ' + time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds());
+        
+        //$('#timeSpent').toggle().html('Time Start = ' + time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds());
 
         $.ajax('/api/gettweetsnodb', {
             method: 'GET',
@@ -30,19 +33,21 @@
 
                 $('#tblResult').toggle();
                 
-                for (var ctr = 0 ; ctr < data.length ; ctr++) { //data[ctr].CreatedAt
-                    $('#tbodyResult').append('<tr><td>' + (ctr + 1) + '-' + data[ctr].StatusID  + '</td><td>' + data[ctr].User.Identifier.ScreenName + '</td><td>' + data[ctr].Text + '</td></tr>');
+                for (var ctr = 0 ; ctr < data.length ; ctr++) {
+                    $('#tbodyResult').append('<tr><td><img src="' + data[ctr].User.ProfileImageUrl + '" alt="' + data[ctr].User.Identifier.ScreenName + '" class="img-rounded tweet-photo"><span class="tweet-date">' + (new Date(data[ctr].CreatedAt)).toLocaleString() + '</span><div><span><strong>' + data[ctr].User.Name + '</strong></span><span class="tweet-username">' + data[ctr].User.Identifier.ScreenName + '</span></div><div>' + data[ctr].Text + '</div></td></tr>');
+                    allResults += '\n' + (new Date(data[ctr].CreatedAt)).toLocaleString() + ',' + data[ctr].User.Identifier.ScreenName + ',' + data[ctr].Text;
                 }
-
-                time = new Date();                
-                $('#count').html('Count: ' + tweetCount);
-                $('#timeSpent').append('<br />Time End = ' + time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds());
+                
+                //time = new Date();                
+                //$('#count').html('Count: ' + tweetCount);
+                //$('#timeSpent').append('<br />Time End = ' + time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds());
             },
             fail: function () {
                 console.log('fail');
                 status = false;
             }
         }).done(function () {
+            $('#btnExport').toggle();
             $('button').removeClass('disabled');
             $('button').children('.glyphicon').toggle();
             $('button').children('.loader').toggle();
@@ -59,10 +64,11 @@
                                 tweetCount += data.length;
 
                                 for (var ctr = 0 ; ctr < data.length; ctr++) {
-                                    $('#tbodyResult').prepend('<tr><td>' + (ctr + 1) + '-' + data[ctr].StatusID + '</td><td>' + data[ctr].User.Identifier.ScreenName + '</td><td>' + data[ctr].Text + '</td></tr>');
+                                    $('#tbodyResult').prepend('<tr><td><img src="' + data[ctr].User.ProfileImageUrl + '" alt="' + data[ctr].User.Identifier.ScreenName + '" class="img-rounded tweet-photo"><span class="tweet-date">' + (new Date(data[ctr].CreatedAt)).toLocaleString() + '</span><div><span><strong>' + data[ctr].User.Name + '</strong></span><span class="tweet-username">' + data[ctr].User.Identifier.ScreenName + '</span></div><div>' + data[ctr].Text + '</div></td></tr>');
+                                    allResults = (new Date(data[ctr].CreatedAt)).toLocaleString() + ',' + data[ctr].User.Identifier.ScreenName + ',' + data[ctr].Text + '\n' + allResults;
                                 }
 
-                                $('#count').html('Count: ' + tweetCount);
+                                //$('#count').html('Count: ' + tweetCount);
                             }
                         }, fail: function () {
                             status = false;
@@ -74,5 +80,24 @@
                 clearInterval();
             }
         });
+    });
+
+    $('#btnExport').click(function () {
+        var csvContent = "data:text/csv;charset=utf-8";
+        csvContent += allResults;
+        var encodedUri = encodeURI(csvContent);
+        ////window.open(encodedUri);
+        //var link = document.createElement('a');
+        //link.setAttribute('href', encodedUri);
+        //link.setAttribute('download', 'tweet_results.csv');
+        //link.click();
+
+        var pom = document.createElement('a');
+        var csvContent = allResults; //here we load our csv data 
+        var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        var url = URL.createObjectURL(blob);
+        pom.href = url;
+        pom.setAttribute('download', 'foo.csv');
+        pom.click();
     });
 });
