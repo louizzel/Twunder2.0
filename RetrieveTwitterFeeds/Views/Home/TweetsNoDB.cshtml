@@ -17,7 +17,6 @@
 
     <link href="~/Content/bootstrap.min.css" rel="stylesheet">
     <link href="~/Content/home-tweetsnodb.css" rel="stylesheet">
-    
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -43,25 +42,28 @@
     <!-- Begin page content -->
     <div class="container">
         <div class="page-header">
-            <h3>
-            What do you want to search?</h3></div>
+            <h3>What do you want to search?</h3>
+        </div>
         <div class="row">
             <div class="col-lg-12">
                 <div class="input-group">
                     <input id="search_term" type="text" class="form-control" title="Input the term you want to search...">
                     <span class="input-group-btn">
-                        <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span><span class="loader">
-                            <img src="/Images/ajax-loader.gif" width="14" height="14"></span></button></span>
+                        <button class="btn btn-default" type="button">
+                            <span class="glyphicon glyphicon-search"></span><span class="loader">
+                                <img src="/Images/ajax-loader.gif" width="14" height="14"></span></button></span>
                 </div>
-                <span id="timeSpent"></span>
-                <span id="count"></span>
-                <a href="#" id="btnExport" class="btn btn-info">Want to export the results to a CSV file?</a>
+                <div class="notifications">
+                    <span id="timeSpent"></span>
+                    <div id="count" class="alert"></div>
+                    <a href="#" id="btnExport" class="btn btn-info col-lg-12 col-md-12 col-sm-12">Want to export the results to a CSV file?</a>
+                </div>
                 <table class="table table-hover" id="tblResult">
                     <thead>
                         <tr>
                         </tr>
                     </thead>
-                    <tbody id="tbodyResult"></tbody>                    
+                    <tbody id="tbodyResult"></tbody>
                 </table>
             </div>
         </div>
@@ -70,7 +72,7 @@
 
     <div id="footer">
         <div class="container">
-            <p class="text-muted">Twunder 2.0 as of June 4, 2014.</p>
+            <p class="text-muted">Twunder 2.0 as of June 9, 2014.</p>
         </div>
     </div>
 
