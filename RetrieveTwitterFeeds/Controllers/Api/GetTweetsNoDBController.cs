@@ -19,7 +19,7 @@ namespace RetrieveTwitterFeeds.Controllers.Api
         public List<Status> Get(string query)
         {
             try
-            {                
+            {
                 _auth.Credentials = new InMemoryCredentials
                 {
                     ConsumerKey = System.Configuration.ConfigurationManager.AppSettings["ConsumerKey"],
@@ -39,7 +39,7 @@ namespace RetrieveTwitterFeeds.Controllers.Api
                         var temp = (from search in twitterContext.Search
                                     where search.Type == SearchType.Search && search.Count == 1000
                                               && search.Query == query && search.MaxID == maxID
-                                              //Tweets older than date
+                                        //Tweets older than date
                                               && search.Until == DateTime.Parse("06-08-2014")
                                     select search).SingleOrDefault().Statuses;
                         result.AddRange(temp);
@@ -79,12 +79,12 @@ namespace RetrieveTwitterFeeds.Controllers.Api
 
                 using (var twitterContext = new TwitterContext(_auth))
                 {
-                    var gatherMore = true;                    
+                    var gatherMore = true;
                     while (gatherMore)
                     {
                         var temp = (from search in twitterContext.Search
                                     where search.Type == SearchType.Search && search.Count == 1000
-                                              && search.Query == query && search.SinceID == ulong.Parse(sinceID) 
+                                              && search.Query == query && search.SinceID == ulong.Parse(sinceID)
                                               && search.Until == DateTime.Parse("06-07-2014") && search.ResultType == ResultType.Recent
                                     select search).SingleOrDefault().Statuses;
                         result.AddRange(temp);
@@ -103,6 +103,36 @@ namespace RetrieveTwitterFeeds.Controllers.Api
             }
         }
 
+        public List<Status> Get(string query, ulong maxID)
+        {
+            try
+            {
+                _auth.Credentials = new InMemoryCredentials
+                {
+                    ConsumerKey = System.Configuration.ConfigurationManager.AppSettings["ConsumerKey"],
+                    ConsumerSecret = System.Configuration.ConfigurationManager.AppSettings["ConsumerSecret"]
+                };
+
+                _auth.Authorize();
+
+                var result = new List<Status>();
+
+                using (var twitterContext = new TwitterContext(_auth))
+                {
+                    var temp = (from search in twitterContext.Search
+                                where search.Type == SearchType.Search && search.Count == 1000
+                                          && search.Query == query && search.MaxID == maxID
+                            select search).SingleOrDefault().Statuses;
+                    result.AddRange(temp);
+                };
+                return result.GroupBy(m => m.StatusID).Select(n => n.First()).OrderByDescending(s => s.StatusID).ToList();
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occured. Please check your network connection. " + e.Message);
+            }
+        }
+
         public void WriteFile(List<Status> data, string query)
         {
             string fileName = @"C:\wamp\" + query + ".csv";
@@ -113,7 +143,7 @@ namespace RetrieveTwitterFeeds.Controllers.Api
                 var ctr = 1;
                 while (File.Exists(fileName))
                 {
-                    fileName = @"C:\wamp\" + query + " - " + ctr + ".csv";
+                    fileName = @"C:\wamp\" + query + "(" + ctr + ").csv";
                     ctr++;
                 }
 
@@ -125,7 +155,7 @@ namespace RetrieveTwitterFeeds.Controllers.Api
 
                     foreach (var temp in data)
                     {
-                        byte[] line = new UTF8Encoding(true).GetBytes(temp.CreatedAt.AddHours(8) + "," + temp.User.Identifier.ScreenName + "," + temp.Text.Replace("\n", " ").Replace("\r\n"," ").Replace("\r", " ") + ",https://twitter.com/" + temp.User.Identifier.ScreenName + "/status/" + temp.StatusID + "\n");
+                        byte[] line = new UTF8Encoding(true).GetBytes(temp.CreatedAt.AddHours(8) + "," + temp.User.Identifier.ScreenName + "," + temp.Text.Replace("\n", " ").Replace("\r\n", " ").Replace("\r", " ") + ",https://twitter.com/" + temp.User.Identifier.ScreenName + "/status/" + temp.StatusID + "\n");
                         fs.Write(line, 0, line.Length);
                     }
                 }
@@ -133,7 +163,7 @@ namespace RetrieveTwitterFeeds.Controllers.Api
             catch (Exception Ex)
             {
                 throw new Exception("An error occured. Please check your network connection. " + Ex.Message);
-            }  
+            }
         }
     }
 }

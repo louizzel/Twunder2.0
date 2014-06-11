@@ -282,6 +282,7 @@
     <None Include="Scripts\jquery-2.0.3.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\home-tweetsnodb-2.js" />
     <Content Include="Scripts\get-tweets2.js" />
     <Content Include="Scripts\get-tweets.js" />
     <Content Include="Scripts\home-tweetsnodb.js" />

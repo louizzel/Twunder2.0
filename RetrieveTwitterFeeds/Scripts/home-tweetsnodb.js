@@ -12,6 +12,10 @@
     $('#timeSpent').toggle();
     $('#btnExport').toggle();
 
+    $(".advanced-search").click(function () {
+
+    });
+
     $('button').click(function () {
         sinceID = 0;
         status = true;
